@@ -6,9 +6,8 @@ export const useLogin = () => {
   const setAuth = useAuthStore((s) => s.setAuth)
   return useMutation({
     mutationFn: async (credentials) => {
-      await api.post('/auth/login', credentials)
-      const { data: user } = await api.get('/users/me')
-      return user
+      const res = await api.post('/auth/login', credentials)
+      return res.data.user
     },
     onSuccess: (user) => setAuth(user),
   })

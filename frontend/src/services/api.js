@@ -23,13 +23,16 @@ api.interceptors.response.use(
       originalRequest._retry = true
       isRefreshing = true
       try {
-        await api.post('/auth/refresh')
+        const res = await api.post('/auth/refresh')
+        if (res.data?.access_token) {
+          originalRequest.headers['Authorization'] = `Bearer ${res.data.access_token}`
+        }
         processQueue(null)
         return api(originalRequest)
-      } catch {
-        processQueue(err)
+      } catch (refreshError) {
+        processQueue(refreshError)
         window.location.href = '/login'
-        return Promise.reject(err)
+        return Promise.reject(refreshError)
       } finally {
         isRefreshing = false
       }

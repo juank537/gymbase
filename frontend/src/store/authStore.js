@@ -15,7 +15,10 @@ export const useAuthStore = create((set) => ({
     try {
       const { data } = await api.get('/users/me')
       set({ user: data, isAuthenticated: true, isLoading: false })
-    } catch {
+    } catch (err) {
+      if (err.response?.status === 401) {
+        window.location.href = '/login'
+      }
       set({ user: null, isAuthenticated: false, isLoading: false })
     }
   },

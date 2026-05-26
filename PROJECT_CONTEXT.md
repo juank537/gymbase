@@ -1,5 +1,5 @@
 # 🏋️ GymBase - Contexto del Proyecto
-> Última actualización: 2026-05-26 | Estado: **Fase 1 funcional — lista para ejecutar**
+> Última actualización: 2026-05-26 | Estado: **Fase 2 - Task 2 completada**
 
 ## 🛠️ Stack & Versiones
 - Backend: FastAPI + SQLAlchemy 2.0 (async) + Alembic + Pydantic v2
@@ -27,17 +27,21 @@ gymbase/
 - [x] `/users/me` protegido + listado + cambio de rol (admin)
 - [x] `/members` CRUD: listar (paginado + filtro status), crear, dar de baja
 - [x] Migración Alembic `001` lista (`users` + `members` con enum types)
+- [x] **Refresh Tokens**: cookies httpOnly + `/auth/refresh` + renovación silenciosa
+- [x] **Testing**: 24 tests pytest + httpx (auth, users, members, plans, memberships)
 
 ### Frontend — 5 rutas con ProtectedRoute
 - [x] Tailwind v4 CSS-first (`@import "tailwindcss"`) + DaisyUI 5 (`@plugin`)
 - [x] Vite proxy a `localhost:8000`
-- [x] Axios interceptors con Bearer token + 401 → redirect `/login`
+- [x] Axios interceptors con **refresh token automático** + 401 → redirect `/login`
 - [x] Zustand store (`authStore`) con `setAuth` / `logout`
 - [x] `ProtectedRoute` wrapper (redirige a `/login` si no autenticado)
 - [x] `/login` — formulario con validación + carga de perfil
 - [x] `/register` — formulario con validación + redirección a login
 - [x] `/` — Dashboard con info del usuario + enlace a socios
 - [x] `/members` — cards con estado, paginación, confirmación de baja
+- [x] **Cookies httpOnly**: tokens manejados por backend, frontend solo guarda usuario
+- [x] **E2E Testing**: Playwright + 15 tests (auth, registration, protected routes, dashboard, members)
 
 ### Seguridad Aplicada
 - [x] JWT con `HTTPBearer` + validación asíncrona + `is_active` check
@@ -69,13 +73,13 @@ npm run dev              # http://localhost:5173
 ```
 
 ## 🔐 Notas de Producción (pendiente)
-- Migrar `sessionStorage` → `httpOnly` + `Secure` cookies antes de deploy
+- Configurar `Secure` flag en cookies para HTTPS en producción
 - Configurar pool de conexiones SSL en `DATABASE_URL` para prod
-- Añadir refresh token silencioso
+- Rotación automática de refresh tokens
 
 ## 🚧 Próximos Pasos (Fase 2)
-1. Refresh Token + cookies `httpOnly` + renovación silenciosa
-2. Testing: pytest + httpx (backend) + Playwright (frontend)
+1. ~~Refresh Token + cookies `httpOnly` + renovación silenciosa~~ ✅
+2. ~~Testing: pytest + httpx (backend) + Playwright (frontend)~~ ✅
 3. Docker Compose + Dockerfile multi-stage
 4. Nginx reverse proxy + healthchecks
 5. CI/CD con GitHub Actions (lint, test, build, deploy)

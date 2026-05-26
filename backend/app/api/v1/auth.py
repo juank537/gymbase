@@ -32,13 +32,13 @@ async def register(request: Request, data: UserCreate, db: AsyncSession = Depend
     return await auth_service.register_user(db, data)
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=RefreshResponse)
 @limiter.limit("10/minute")
 async def login(request: Request, data: UserLogin, db: AsyncSession = Depends(get_db), response: Response = None):
     result = await auth_service.authenticate_user(db, data.email, data.password)
     refresh_token = create_refresh_token({"sub": str(result["user"].id), "type": "refresh"})
     _set_auth_cookies(response, result["access_token"], refresh_token)
-    return {"access_token": result["access_token"], "token_type": "bearer"}
+    return {"access_token": result["access_token"], "token_type": "bearer", "user": UserResponse.model_validate(result["user"])}
 
 
 @router.post("/refresh", response_model=RefreshResponse)
