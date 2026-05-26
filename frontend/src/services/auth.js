@@ -6,25 +6,16 @@ export const useLogin = () => {
   const setAuth = useAuthStore((s) => s.setAuth)
   return useMutation({
     mutationFn: async (credentials) => {
-      const { data } = await api.post('/auth/login', credentials)
-      return data
+      await api.post('/auth/login', credentials)
+      const { data: user } = await api.get('/users/me')
+      return user
     },
-    onSuccess: async ({ access_token }) => {
-      // Carga perfil completo tras login exitoso
-      try {
-        const { data: user } = await api.get('/users/me')
-        setAuth(user, access_token)
-      } catch (err) {
-        console.error('Fallo al cargar perfil tras login:', err)
-      }
-    }
+    onSuccess: (user) => setAuth(user),
   })
 }
 
 export const useRegister = () => {
   return useMutation({
-    mutationFn: async (data) => {
-      return (await api.post('/auth/register', data)).data
-    }
+    mutationFn: async (data) => (await api.post('/auth/register', data)).data,
   })
 }

@@ -18,6 +18,10 @@ class UserCreate(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=1)
+
 class UserResponse(BaseModel):
     id: int
     email: EmailStr

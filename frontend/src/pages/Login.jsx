@@ -11,15 +11,14 @@ export default function Login() {
   const setAuth = useAuthStore((s) => s.setAuth)
 
   const login = useMutation({
-    mutationFn: async (data) => (await api.post('/auth/login', data)).data,
-    onSuccess: async ({ access_token }) => {
-      try {
-        const { data: user } = await api.get('/users/me')
-        setAuth(user, access_token)
-        navigate('/')
-      } catch {
-        setError('Error al cargar perfil')
-      }
+    mutationFn: async (data) => {
+      await api.post('/auth/login', data)
+      const { data: user } = await api.get('/users/me')
+      return user
+    },
+    onSuccess: (user) => {
+      setAuth(user)
+      navigate('/')
     },
     onError: (err) => setError(err.detail || 'Credenciales inválidas'),
   })

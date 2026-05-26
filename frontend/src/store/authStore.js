@@ -1,16 +1,22 @@
 import { create } from 'zustand'
+import api from '../services/api'
 
 export const useAuthStore = create((set) => ({
   user: null,
-  token: sessionStorage.getItem('access_token') || null,
-  isAuthenticated: !!sessionStorage.getItem('access_token'),
-  setAuth: (user, token) => {
-    sessionStorage.setItem('access_token', token)
-    set({ user, token, isAuthenticated: true })
-  },
+  isAuthenticated: false,
+  isLoading: true,
+  setAuth: (user) => set({ user, isAuthenticated: true, isLoading: false }),
   setUser: (user) => set({ user }),
-  logout: () => {
-    sessionStorage.removeItem('access_token')
-    set({ user: null, token: null, isAuthenticated: false })
+  logout: async () => {
+    try { await api.post('/auth/logout') } catch { /* ignore */ }
+    set({ user: null, isAuthenticated: false, isLoading: false })
+  },
+  checkAuth: async () => {
+    try {
+      const { data } = await api.get('/users/me')
+      set({ user: data, isAuthenticated: true, isLoading: false })
+    } catch {
+      set({ user: null, isAuthenticated: false, isLoading: false })
+    }
   },
 }))

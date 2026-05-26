@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Query
+from ...core.dependencies import get_current_user
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from ...core.dependencies import get_db, require_role, limiter
@@ -13,7 +14,7 @@ router = APIRouter(prefix="/users", tags=["Usuarios"])
 @limiter.limit("30/minute")
 async def get_my_profile(
     request: Request,
-    current_user: User = Depends(require_role(UserRole.ADMIN, UserRole.TRAINER, UserRole.MEMBER)),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     return current_user

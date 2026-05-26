@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from jose import jwt, JWTError
@@ -12,16 +12,32 @@ from sqlalchemy import select
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 limiter = Limiter(key_func=get_remote_address)
 
+
 async def get_current_user(
+    request: Request = None,
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ) -> User:
     settings = get_settings()
+    token = None
+
+    if credentials:
+        token = credentials.credentials
+    elif request and request.cookies.get("access_token"):
+        token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No autenticado",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     try:
-        payload = jwt.decode(credentials.credentials, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
+        payload = jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
         user_id = payload.get("sub")
         if not user_id:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
@@ -33,6 +49,7 @@ async def get_current_user(
     if not user or not user.is_active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuario no encontrado o inactivo")
     return user
+
 
 def require_role(*allowed_roles: UserRole):
     def role_checker(current_user: User = Depends(get_current_user)):
