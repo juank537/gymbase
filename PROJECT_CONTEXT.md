@@ -1,5 +1,5 @@
 # 🏋️ GymBase - Contexto del Proyecto
-> Última actualización: 2026-05-26 | Estado: **Fase 2 - Task 2 completada**
+> Última actualización: 2026-05-26 | Estado: **Fase 3 - Task 6 completada**
 
 ## 🛠️ Stack & Versiones
 - Backend: FastAPI + SQLAlchemy 2.0 (async) + Alembic + Pydantic v2
@@ -29,6 +29,8 @@ gymbase/
 - [x] Migración Alembic `001` lista (`users` + `members` con enum types)
 - [x] **Refresh Tokens**: cookies httpOnly + `/auth/refresh` + renovación silenciosa
 - [x] **Testing**: 24 tests pytest + httpx (auth, users, members, plans, memberships)
+- [x] **Planes & Membresías**: CRUD completo con estados y relaciones
+- [x] **Pagos Stripe**: PaymentIntent, Checkout Sessions, verificación
 
 ### Frontend — 5 rutas con ProtectedRoute
 - [x] Tailwind v4 CSS-first (`@import "tailwindcss"`) + DaisyUI 5 (`@plugin`)
@@ -42,6 +44,7 @@ gymbase/
 - [x] `/members` — cards con estado, paginación, confirmación de baja
 - [x] **Cookies httpOnly**: tokens manejados por backend, frontend solo guarda usuario
 - [x] **E2E Testing**: Playwright + 15 tests (auth, registration, protected routes, dashboard, members)
+- [x] **Pagos Stripe**: `usePayment` hook + `PaymentButton` component
 
 ### Seguridad Aplicada
 - [x] JWT con `HTTPBearer` + validación asíncrona + `is_active` check
@@ -77,11 +80,11 @@ npm run dev              # http://localhost:5173
 - Configurar pool de conexiones SSL en `DATABASE_URL` para prod
 - Rotación automática de refresh tokens
 
-## 🚧 Próximos Pasos (Fase 2)
+## 🚧 Próximos Pasos (Fase 3)
 1. ~~Refresh Token + cookies `httpOnly` + renovación silenciosa~~ ✅
 2. ~~Testing: pytest + httpx (backend) + Playwright (frontend)~~ ✅
-3. Docker Compose + Dockerfile multi-stage
-4. Nginx reverse proxy + healthchecks
-5. CI/CD con GitHub Actions (lint, test, build, deploy)
-6. Módulo de planes/membresías + pagos
+3. ~~Docker Compose + Dockerfile multi-stage~~ ✅
+4. ~~Nginx reverse proxy + healthchecks~~ ✅
+5. ~~CI/CD con GitHub Actions (lint, test, build, deploy)~~ ✅
+6. ~~Módulo de planes/membresías + pagos~~ ✅
 7. Dashboard con métricas (gráficos, miembros activos, ingresos)

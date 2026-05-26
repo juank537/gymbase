@@ -16,6 +16,7 @@ from .api.v1.members import router as members_router
 from .api.v1.health import router as health_router
 from .api.v1.plans import router as plans_router
 from .api.v1.memberships import router as memberships_router
+from .api.v1.payments import router as payments_router
 
 logger = logging.getLogger("gymbase")
 
@@ -70,3 +71,4 @@ app.include_router(members_router, prefix="/api/v1")
 app.include_router(health_router, prefix="/api/v1")
 app.include_router(plans_router, prefix="/api/v1")
 app.include_router(memberships_router, prefix="/api/v1")
+app.include_router(payments_router, prefix="/api/v1")
