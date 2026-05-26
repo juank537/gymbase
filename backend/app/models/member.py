@@ -7,6 +7,7 @@ from enum import StrEnum
 
 if TYPE_CHECKING:
     from .user import User
+    from .membership import Membership
 
 class MemberStatus(StrEnum):
     ACTIVE = "active"
@@ -26,5 +27,5 @@ class Member(Base):
     joined_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
     ended_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
-    # 🔗 Usa string para evitar import circular
     user: Mapped[User] = relationship("User", back_populates="members", lazy="joined")
+    memberships: Mapped[list[Membership]] = relationship("Membership", back_populates="member", lazy="selectin")

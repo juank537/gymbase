@@ -13,6 +13,9 @@ import logging
 from .api.v1.auth import router as auth_router
 from .api.v1.users import router as users_router
 from .api.v1.members import router as members_router
+from .api.v1.health import router as health_router
+from .api.v1.plans import router as plans_router
+from .api.v1.memberships import router as memberships_router
 
 logger = logging.getLogger("gymbase")
 
@@ -64,9 +67,6 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(users_router, prefix="/api/v1")
 app.include_router(members_router, prefix="/api/v1")
-
-
-@app.get("/health")
-@limiter.limit("20/minute")
-async def health(request: Request):
-    return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
+app.include_router(health_router, prefix="/api/v1")
+app.include_router(plans_router, prefix="/api/v1")
+app.include_router(memberships_router, prefix="/api/v1")

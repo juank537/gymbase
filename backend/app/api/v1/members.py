@@ -31,7 +31,7 @@ async def create_member(
     db: AsyncSession = Depends(get_db),
     current_user = Depends(require_role(UserRole.ADMIN, UserRole.TRAINER))
 ):
-    return await member_repo.create_member(db, data.model_dump())
+    return await member_repo.create_member(db, data.model_dump() | {"user_id": current_user.id})
 
 @router.patch("/{member_id}/terminate", response_model=MemberResponse)
 @limiter.limit("10/minute")

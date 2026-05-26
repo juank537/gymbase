@@ -25,7 +25,7 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
     engine = create_async_engine(TEST_DB_URL, echo=False)
     async with engine.connect() as conn:
         await conn.begin()
-        session_factory = async_sessionmaker(bind=conn, class_=AsyncSession, expire_on_commit=False)
+        session_factory = async_sessionmaker(bind=conn, class_=AsyncSession, expire_on_commit=False, join_transaction_mode="create_savepoint")
         async with session_factory() as session:
             yield session
         await conn.rollback()
