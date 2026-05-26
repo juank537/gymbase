@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Query
+from fastapi import APIRouter, Depends, status, Request, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import datetime, timezone
+from datetime import timezone
 
 from ...core.dependencies import get_db, require_role, limiter
 from ...core.roles import UserRole

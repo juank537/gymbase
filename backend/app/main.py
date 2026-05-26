@@ -1,18 +1,19 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import Response, JSONResponse
+from starlette.responses import JSONResponse
 from contextlib import asynccontextmanager
 from .core.config import get_settings
 from datetime import datetime, timezone
 import logging
-import json
 
+from .api.v1.auth import router as auth_router
+from .api.v1.users import router as users_router
+from .api.v1.members import router as members_router
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger("gymbase")
 
 settings = get_settings()
@@ -26,7 +27,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "X-Frame-Options": "DENY",
             "X-XSS-Protection": "1; mode=block",
             "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-            "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;",
+            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https://fastapi.tiangolo.com; font-src 'self' data:;",
             "Referrer-Policy": "strict-origin-when-cross-origin",
             "Cache-Control": "no-store, no-cache, must-revalidate"
         })
@@ -59,12 +60,10 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
 )
-# falta el fichero auth en api/v1, pero lo añado para que se vea la estructura de rutas
-# falta el fichero users en api/v1, pero lo añado para que se vea la estructura de rutass
-from .api.v1.auth import router as auth_router
-from .api.v1.users import router as users_router
+
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(users_router, prefix="/api/v1")
+app.include_router(members_router, prefix="/api/v1")
 
 
 @app.get("/health")

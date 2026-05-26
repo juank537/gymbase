@@ -1,7 +1,12 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from sqlalchemy import String, DateTime, Enum as SAEnum, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
 from enum import StrEnum
+
+if TYPE_CHECKING:
+    from .user import User
 
 class MemberStatus(StrEnum):
     ACTIVE = "active"
@@ -22,4 +27,4 @@ class Member(Base):
     ended_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # 🔗 Usa string para evitar import circular
-    user: Mapped["User"] = relationship("User", back_populates="members", lazy="joined")
+    user: Mapped[User] = relationship("User", back_populates="members", lazy="joined")

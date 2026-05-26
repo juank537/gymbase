@@ -1,17 +1,18 @@
-function App() {
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Dashboard from './pages/Dashboard'
+import Members from './pages/Members'
+import ProtectedRoute from './components/ProtectedRoute'
+
+export default function App() {
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="card bg-base-100 shadow-xl w-96">
-        <div className="card-body">
-          <h2 className="card-title text-gym-primary">🏋️ GymBase v4</h2>
-          <p>Tailwind CSS 4 + DaisyUI cargados correctamente.</p>
-          <div className="card-actions justify-end mt-4">
-            <button className="btn btn-primary">Empezar</button>
-            <button className="btn btn-ghost">Más tarde</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/members" element={<ProtectedRoute><Members /></ProtectedRoute>} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }
-export default App

@@ -1,75 +1,83 @@
 # 🏋️ GymBase - Contexto del Proyecto
-> Última actualización: 2026-XX-XX | Estado: Fase 1 (Auth) completada
+> Última actualización: 2026-05-26 | Estado: **Fase 1 funcional — lista para ejecutar**
 
 ## 🛠️ Stack & Versiones
 - Backend: FastAPI + SQLAlchemy 2.0 (async) + Alembic + Pydantic v2
-- Frontend: React 19 + Vite 6 + Tailwind CSS v4 + DaisyUI + @tanstack/react-query + Zustand
+- Frontend: React 19 + Vite 8 + Tailwind CSS v4 + DaisyUI 5 + @tanstack/react-query + Zustand
 - DB: PostgreSQL 16 (asyncpg)
-- Entorno: GitHub Codespaces + Docker Compose
 - Python: 3.12+ | Node: 20+
 
 ## 📁 Estructura Base
-gym-project/
+```
+gymbase/
 ├── backend/app/{core,api/v1,models,schemas,services,repositories}
 ├── frontend/src/{components,pages,hooks,services,store,utils}
-├── alembic/ | docker-compose.yml | .devcontainer/ | .github/dependabot.yml
+├── alembic/ | .env
+```
 
-## 🔐 Seguridad Aplicada
-- JWT con `HTTPBearer` + validación asíncrona + `is_active` check
-- CORS estricto + `allow_credentials=True`
-- Headers: CSP, HSTS, X-Content-Type-Options, X-Frame-Options
-- Rate limiting: `slowapi` en endpoints críticos
-- Hash: `passlib[bcrypt]` | Validación: Pydantic v2 (`EmailStr`, `min_length`)
-- Frontend: Axios interceptors + Zustand + `ProtectedRoute` (React Router v6)
+## ✅ Estado Actual (Fase 1 — Completa)
 
-## 📐 Convenciones 2026
-- Siempre usar `async/await` en DB y servicios
-- Tailwind v4: configuración CSS-first (`@import "tailwindcss"`, `@theme {}`)
-- DaisyUI: temas en `@plugin "daisyui" { themes: ... }`
-- Rutas: `/api/v1/<modulo>` | Swagger integrado
-- Estado frontend: `@tanstack/react-query` para server state, `zustand` para UI/auth
-- Migraciones: Alembic con `target_metadata = Base.metadata` (importar modelos explícitamente)
+### Backend — 13 rutas registradas
+- [x] FastAPI lifespan + CORS + Security Headers + Rate Limit (slowapi)
+- [x] `Settings` vía Pydantic v2 con `.env`
+- [x] Modelos `User` + `Member` (SQLAlchemy 2.0 async, `from __future__ import annotations`)
+- [x] Esquemas Pydantic v2 con validación (email, password policy, teléfono)
+- [x] Repositorios async con paginación
+- [x] Auth: `/register`, `/login` (JWT) + `get_current_user` + RBAC (`require_role`)
+- [x] `/users/me` protegido + listado + cambio de rol (admin)
+- [x] `/members` CRUD: listar (paginado + filtro status), crear, dar de baja
+- [x] Migración Alembic `001` lista (`users` + `members` con enum types)
 
-## ✅ Estado Actual
-- [x] Estructura modular + Codespace + Docker PostgreSQL
-- [x] FastAPI lifespan + CORS + Security Headers + Rate Limit
-- [x] Modelo `User` + Alembic migrado
-- [x] Auth: `/register`, `/login` (JWT) + `get_current_user`
-- [x] `/users/me` protegido + Swagger con 🔒
-- [x] Frontend: Login/Register/Dashboard + Tailwind v4 + DaisyUI + Zustand + React Query
-- [x] Interceptores Axios + `ProtectedRoute` + redirección 401
+### Frontend — 5 rutas con ProtectedRoute
+- [x] Tailwind v4 CSS-first (`@import "tailwindcss"`) + DaisyUI 5 (`@plugin`)
+- [x] Vite proxy a `localhost:8000`
+- [x] Axios interceptors con Bearer token + 401 → redirect `/login`
+- [x] Zustand store (`authStore`) con `setAuth` / `logout`
+- [x] `ProtectedRoute` wrapper (redirige a `/login` si no autenticado)
+- [x] `/login` — formulario con validación + carga de perfil
+- [x] `/register` — formulario con validación + redirección a login
+- [x] `/` — Dashboard con info del usuario + enlace a socios
+- [x] `/members` — cards con estado, paginación, confirmación de baja
 
-## 🚧 Próximos Pasos
-1. Módulo Members (CRUD + paginación + filtros)
-2. Refresh Token + cookies `httpOnly` + silenciosa renovación
-3. Testing: pytest + httpx + Playwright
-4. Docker prod + Nginx reverse proxy + healthchecks
-5. CI/CD con GitHub Actions (lint, test, build, deploy)
+### Seguridad Aplicada
+- [x] JWT con `HTTPBearer` + validación asíncrona + `is_active` check
+- [x] CORS estricto + `allow_credentials=True`
+- [x] Headers: CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy
+- [x] Rate limiting: slowapi en endpoints críticos (auth 5-10/min, CRUD 10-50/min)
+- [x] Hash: bcrypt via passlib | Validación: Pydantic v2 (`EmailStr`, `model_validator`)
+- [x] RBAC: `UserRole` enum + `require_role()` dependency
+- [x] Password Policy: Regex 8+ chars, upper/lower/digit/symbol
+- [x] Audit logging: middleware para logs estructurados de errores 4xx/5xx
 
-## 📝 Notas de Producción
+## ⚙️ Cómo Ejecutar
+
+### Backend
+```bash
+cd backend
+.venv\Scripts\activate   # o source .venv/bin/activate
+pip install -r requirements.txt
+# Asegurar PostgreSQL corriendo en localhost:5432
+alembic upgrade head
+uvicorn app.main:app --reload --port 8000
+```
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev              # http://localhost:5173
+```
+
+## 🔐 Notas de Producción (pendiente)
 - Migrar `sessionStorage` → `httpOnly` + `Secure` cookies antes de deploy
-- Añadir `argon2` o `bcrypt` con salt configurado si se requiere compliance
 - Configurar pool de conexiones SSL en `DATABASE_URL` para prod
+- Añadir refresh token silencioso
 
-
-## 🔐 Seguridad Implementada (Hardening 2026)
-- RBAC: `UserRole` enum + `require_role()` dependency
-- Rate Limiting: `slowapi` aplicado a auth, CRUD y health
-- Password Policy: Regex 8+ chars, upper/lower/digit/symbol + Pydantic `model_validator`
-- Headers: CSP, HSTS, X-Frame, X-Content-Type, Referrer-Policy, Cache-Control
-- Audit Logging: Middleware para logs estructurados de errores 4xx/5xx en `/api/`
-- Token: Bearer + `sessionStorage` (dev), path de migración a `httpOnly` cookies listo
-
-## 👥 CRUD Miembros
-- Modelo `Member` con FK a `User`, status enum, joined_at
-- Schema Pydantic v2 con validación de teléfono
-- Repo async con paginación offset/limit + count total
-- API protegida con `require_role(ADMIN, TRAINER)` + rate limit
-- Frontend: `@tanstack/react-query` + paginación UI + cards DaisyUI
-
-## 👥 CRUD Miembros (v2)
-- Campos: `joined_at` (auto UTC), `ended_at` (nullable), `status` enum (`active`, `trial`, `cancelled`, `suspended`)
-- Lógica de baja: `PATCH /members/{id}/terminate` → fuerza status `cancelled` + registra fecha
-- Repo: `terminate_member()` con validación de existencia + `refresh()` asíncrono
-- UI: Cards con borde lateral por estado, fechas formateadas (`Intl.DateTimeFormat`), botón de baja con confirmación
-- Paginación: offset/limit + UI inteligente (desactiva "Siguiente" si items < limit)
+## 🚧 Próximos Pasos (Fase 2)
+1. Refresh Token + cookies `httpOnly` + renovación silenciosa
+2. Testing: pytest + httpx (backend) + Playwright (frontend)
+3. Docker Compose + Dockerfile multi-stage
+4. Nginx reverse proxy + healthchecks
+5. CI/CD con GitHub Actions (lint, test, build, deploy)
+6. Módulo de planes/membresías + pagos
+7. Dashboard con métricas (gráficos, miembros activos, ingresos)

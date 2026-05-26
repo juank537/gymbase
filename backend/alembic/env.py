@@ -1,7 +1,8 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from app.core.config import get_settings
-from app.models.base import Base  # Importa tu metadata
+from app.models.base import Base
+from app.models import user, member
 
 from logging.config import fileConfig
 
