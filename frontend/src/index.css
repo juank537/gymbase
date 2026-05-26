@@ -1,0 +1,19 @@
+/* src/index.css */
+@import "tailwindcss";
+/* @import "tailwindcss/preflight"; */
+/* @tailwind utilities; */
+@plugin "daisyui" {
+  themes: light, dark, corporate, synthwave;
+}
+
+/* Opcional: Extender tema con @theme (reemplaza tailwind.config.js) */
+@theme {
+  --color-gym-primary: #6366f1;
+  --color-gym-secondary: #ec4899;
+  --font-display: "Inter", system-ui, sans-serif;
+}
+
+body {
+  @apply bg-base-200 text-base-content font-display;
+}
+
