@@ -53,13 +53,13 @@ async def get_dashboard_metrics(
     # New members this month
     first_day_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     new_members_result = await db.execute(
-        select(func.count()).select_from(Member).where(Member.created_at >= first_day_month)
+        select(func.count()).select_from(Member).where(Member.joined_at >= first_day_month)
     )
     new_members_month = new_members_result.scalar()
     
     # New members last 30 days
     new_members_30d_result = await db.execute(
-        select(func.count()).select_from(Member).where(Member.created_at >= thirty_days_ago)
+        select(func.count()).select_from(Member).where(Member.joined_at >= thirty_days_ago)
     )
     new_members_30d = new_members_30d_result.scalar()
     
@@ -138,15 +138,15 @@ async def get_dashboard_metrics(
     # Recent activity (last 10 members)
     recent_members = []
     recent_results = await db.execute(
-        select(Member).order_by(Member.created_at.desc()).limit(10)
+        select(Member).order_by(Member.joined_at.desc()).limit(10)
     )
     for member in recent_results.scalars().all():
         recent_members.append({
             "id": member.id,
             "full_name": member.full_name,
-            "email": member.email,
+            "email": member.user.email if member.user else None,
             "status": member.status,
-            "created_at": member.created_at.isoformat()
+            "created_at": member.joined_at.isoformat()
         })
     
     return {
@@ -193,8 +193,8 @@ async def get_members_trend(
         count_result = await db.execute(
             select(func.count()).select_from(Member).where(
                 and_(
-                    Member.created_at >= day_start,
-                    Member.created_at < day_end
+                    Member.joined_at >= day_start,
+                    Member.joined_at < day_end
                 )
             )
         )

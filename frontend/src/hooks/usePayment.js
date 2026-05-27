@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { loadStripe } from '@stripe/stripe-js'
-
-const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy'
+import api from '../services/api'
+import { extractApiError } from '../utils/errorHandler'
 
 export const usePayment = () => {
   const [loading, setLoading] = useState(false)
@@ -11,19 +10,12 @@ export const usePayment = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch('/api/v1/payments/intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ membership_id: membershipId, amount, currency: 'usd' })
-      })
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.detail || 'Error al crear pago')
-      }
-      return await response.json()
+      const { data } = await api.post('/payments/intent', { membership_id: membershipId, amount, currency: 'usd' })
+      return data
     } catch (err) {
-      setError(err.message)
-      throw err
+      const msg = extractApiError(err)
+      setError(msg)
+      throw new Error(msg, { cause: err })
     } finally {
       setLoading(false)
     }
@@ -33,21 +25,19 @@ export const usePayment = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch('/api/v1/payments/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ membership_id: membershipId, plan_name: planName, amount, success_url: successUrl, cancel_url: cancelUrl })
+      const { data } = await api.post('/payments/checkout', {
+        membership_id: membershipId,
+        plan_name: planName,
+        amount,
+        success_url: successUrl,
+        cancel_url: cancelUrl
       })
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.detail || 'Error al crear checkout')
-      }
-      const { checkout_url } = await response.json()
-      window.location.href = checkout_url
+      window.location.href = data.checkout_url
       return { success: true }
     } catch (err) {
-      setError(err.message)
-      throw err
+      const msg = extractApiError(err)
+      setError(msg)
+      throw new Error(msg, { cause: err })
     } finally {
       setLoading(false)
     }

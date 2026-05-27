@@ -1,19 +1,79 @@
-/* src/index.css */
 @import "tailwindcss";
-/* @import "tailwindcss/preflight"; */
-/* @tailwind utilities; */
+
 @plugin "daisyui" {
-  themes: light, dark, corporate, synthwave;
+  themes: dark;
 }
 
-/* Opcional: Extender tema con @theme (reemplaza tailwind.config.js) */
 @theme {
-  --color-gym-primary: #6366f1;
-  --color-gym-secondary: #ec4899;
-  --font-display: "Inter", system-ui, sans-serif;
+  --color-background: #0e0e0e;
+  --color-surface-container: #1a1a1a;
+  --color-surface-container-low: #131313;
+  --color-surface-container-high: #20201f;
+  --color-surface-container-highest: #262626;
+  --color-primary: #f3ffca;
+  --color-primary-container: #cafd00;
+  --color-on-primary: #516700;
+  --color-on-primary-container: #4a5e00;
+  --color-secondary: #ece856;
+  --color-secondary-fixed: #ece856;
+  --color-on-secondary: #565400;
+  --color-surface-variant: #262626;
+  --color-on-surface: #ffffff;
+  --color-on-surface-variant: #adaaaa;
+  --color-outline: #767575;
+  --color-outline-variant: #484847;
+  --color-error: #ff7351;
+  --color-error-dim: #d53d18;
+  --color-gym-primary: #f3ffca;
+  --color-gym-secondary: #ece856;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Lexend", sans-serif;
+  --font-display: "Lexend", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+@utility material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
-  @apply bg-base-200 text-base-content font-display;
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
 }
 
+.text-glow {
+  text-shadow: 0 0 12px rgba(243, 255, 202, 0.4);
+}
+
+.neon-glow {
+  box-shadow: 0 0 40px rgba(243, 255, 202, 0.04);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out both;
+}

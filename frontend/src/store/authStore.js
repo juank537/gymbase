@@ -17,9 +17,10 @@ export const useAuthStore = create((set) => ({
       set({ user: data, isAuthenticated: true, isLoading: false })
     } catch (err) {
       if (err.response?.status === 401) {
-        window.location.href = '/login'
+        set({ user: null, isAuthenticated: false, isLoading: false })
+      } else {
+        set({ user: null, isAuthenticated: false, isLoading: false })
       }
-      set({ user: null, isAuthenticated: false, isLoading: false })
     }
   },
 }))

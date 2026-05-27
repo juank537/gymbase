@@ -20,4 +20,4 @@ class User(Base):
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # 🔗 Usa string para evitar import circular. SQLAlchemy lo resuelve en runtime.
-    members: Mapped[list[Member]] = relationship("Member", back_populates="user", lazy="selectin")
+    members: Mapped[list[Member]] = relationship("Member", back_populates="user", lazy="noload")

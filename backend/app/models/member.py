@@ -28,4 +28,4 @@ class Member(Base):
     ended_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     user: Mapped[User] = relationship("User", back_populates="members", lazy="joined")
-    memberships: Mapped[list[Membership]] = relationship("Membership", back_populates="member", lazy="selectin")
+    memberships: Mapped[list[Membership]] = relationship("Membership", back_populates="member", lazy="noload")
