@@ -31,6 +31,7 @@ gymbase/
 - [x] **Testing**: 24 tests pytest + httpx (auth, users, members, plans, memberships)
 - [x] **Planes & Membresías**: CRUD completo con estados y relaciones
 - [x] **Pagos Stripe**: PaymentIntent, Checkout Sessions, verificación
+- [x] **Métricas Dashboard**: overview, tendencias, membresías por plan, actividad reciente
 
 ### Frontend — 5 rutas con ProtectedRoute
 - [x] Tailwind v4 CSS-first (`@import "tailwindcss"`) + DaisyUI 5 (`@plugin`)
@@ -45,6 +46,7 @@ gymbase/
 - [x] **Cookies httpOnly**: tokens manejados por backend, frontend solo guarda usuario
 - [x] **E2E Testing**: Playwright + 15 tests (auth, registration, protected routes, dashboard, members)
 - [x] **Pagos Stripe**: `usePayment` hook + `PaymentButton` component
+- [x] **Dashboard Métricas**: cards overview, tabla planes, actividad reciente, filtros admin
 
 ### Seguridad Aplicada
 - [x] JWT con `HTTPBearer` + validación asíncrona + `is_active` check
@@ -87,4 +89,7 @@ npm run dev              # http://localhost:5173
 4. ~~Nginx reverse proxy + healthchecks~~ ✅
 5. ~~CI/CD con GitHub Actions (lint, test, build, deploy)~~ ✅
 6. ~~Módulo de planes/membresías + pagos~~ ✅
-7. Dashboard con métricas (gráficos, miembros activos, ingresos)
+7. ~~Dashboard con métricas (gráficos, miembros activos, ingresos)~~ ✅
+
+## 🎉 Proyecto Completado
+**Fase 3 finalizada al 100%** - GymBase listo para producción
